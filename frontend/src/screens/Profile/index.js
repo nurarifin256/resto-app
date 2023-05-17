@@ -10,7 +10,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { themeColors } from "../../theme";
 import Domain from "../../../Domain";
@@ -19,6 +19,13 @@ import { AntDesign } from "@expo/vector-icons";
 
 const Profile = () => {
   const bgRegister = `${Domain.ipAddress}/api/images/auth/bgRegister.jpg`;
+
+  const [visibilty, setVisibilty] = useState(false);
+
+  const changeType = () => {
+    setVisibilty(() => !visibilty);
+  };
+
   return (
     <SafeAreaView>
       <StatusBar style="light" />
@@ -59,14 +66,18 @@ const Profile = () => {
                 <View className="flex-row">
                   <AntDesign name="lock" size={24} color="gray" />
                   <TextInput
-                    secureTextEntry={true}
+                    secureTextEntry={visibilty}
                     className="ml-3 w-25"
                     placeholder="Enter password"
                   />
                 </View>
                 <View>
-                  <Pressable>
-                    <Ionicons name="eye-off-outline" size={24} color="gray" />
+                  <Pressable onPress={() => changeType()}>
+                    {visibilty ? (
+                      <Ionicons name="eye-off-outline" size={24} color="gray" />
+                    ) : (
+                      <Ionicons name="eye-outline" size={24} color="gray" />
+                    )}
                   </Pressable>
                 </View>
               </View>
