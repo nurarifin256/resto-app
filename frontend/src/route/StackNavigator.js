@@ -21,6 +21,7 @@ const StackNavigator = () => {
         screenOptions={{
           headerShown: false,
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
         }}
       >
         <Tab.Screen
