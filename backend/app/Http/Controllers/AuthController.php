@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -15,14 +17,45 @@ class AuthController extends Controller
             $user           = new User();
             $user->name     = $data['username'];
             $user->email    = $data['email'];
-            $user->password = bcrypt($data['email']);
+            $user->password = bcrypt($data['password']);
             $user->save();
 
             return response()->json([
-                'status' => true,
+                'status'  => true,
                 'message' => 'User registration is successfull',
                 201
             ]);
         }
+    }
+
+    public function loginUser(Request $request)
+    {
+        $request->validate([
+            'email'    => 'required|string',
+            'password' => 'required|string'
+        ]);
+        $user = User::firstWhere("email", $request->email);
+
+        if (!$user || Hash::check($request->password, $user->password)) {
+            return response()->json([
+                "message" => "Bad credintial"
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $token = $user->createToken("sanctum_token")->plainTextToken;
+
+        return response()->json([
+            'message' => 'Succesfully logged in',
+            'token' => $token,
+        ], Response::HTTP_OK);
+    }
+
+    public function logoutUser()
+    {
+        auth()->user()->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Succesfully logout'
+        ], Response::HTTP_OK);
     }
 }

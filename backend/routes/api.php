@@ -19,6 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('post-user', 'App\Http\Controllers\AuthController@postUser');
+Route::post('login-user', 'App\Http\Controllers\AuthController@loginUser');
+Route::middleware('auth:sanctum')->post('logout-user', 'App\Http\Controllers\AuthController@logoutUser');
 
 Route::get('images/auth/{images}', function ($image) {
     $path = storage_path('app/public/images/auth/' . $image);

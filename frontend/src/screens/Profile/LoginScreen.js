@@ -1,34 +1,30 @@
 /** @format */
 
 import {
-  Image,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
   View,
+  SafeAreaView,
+  Text,
+  ScrollView,
+  Image,
+  TextInput,
+  Pressable,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { themeColors } from "../../theme";
 import Domain from "../../../Domain";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { useMutation } from "@tanstack/react-query";
-import { postUser } from "../../hooks/authHook";
+import { themeColors } from "../../theme";
 import { useNavigation } from "@react-navigation/native";
 
-const Profile = () => {
-  const navigation = useNavigation();
+export default function LoginScreen() {
   const bgRegister = `${Domain.ipAddress}/api/images/auth/bgRegister.jpg`;
+  const navigation = useNavigation();
 
   const [visibilty, setVisibilty] = useState(true);
 
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
   });
@@ -36,21 +32,9 @@ const Profile = () => {
   const changeType = () => {
     setVisibilty(() => !visibilty);
   };
-
   const handleChange = (name, value) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
-  const { mutate: addUser } = useMutation((formData) => postUser(formData), {
-    onSuccess: (data) => {
-      console.log(data);
-    },
-  });
-
-  const handleSave = () => {
-    addUser(formData);
-  };
-
   return (
     <SafeAreaView>
       <StatusBar style="light" />
@@ -65,24 +49,10 @@ const Profile = () => {
           className="bg-white -mt-12 pt-6 pb-36"
         >
           <View className="px-5 mb-3">
-            <Text className="text-3xl font-bold mx-auto">Register</Text>
+            <Text className="text-3xl font-bold mx-auto">Login</Text>
           </View>
 
           <View className="ml-32 mx-5">
-            <View className="mb-3">
-              <Text className="text-lg">Username</Text>
-              <View className="flex-row flex-1 rounded-xl p-2 bg-gray-100">
-                <Ionicons name="person-outline" size={24} color="gray" />
-                <TextInput
-                  className="ml-3 w-full"
-                  placeholder="Enter username"
-                  autoComplete="off"
-                  value={formData.username}
-                  onChangeText={(value) => handleChange("username", value)}
-                />
-              </View>
-            </View>
-
             <View className="mb-3">
               <Text className="text-lg">Email</Text>
               <View className="flex-row flex-1 rounded-xl p-2 bg-gray-100">
@@ -130,20 +100,20 @@ const Profile = () => {
                 style={{ backgroundColor: themeColors.bgColor(1) }}
               >
                 <Text className="text-center p-3 text-white text-lg">
-                  REGISTER
+                  LOGIN
                 </Text>
               </TouchableOpacity>
             </View>
 
             <View className="justify-center flex-row">
-              <Text className=" font-semibold">Already have an account?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text className=" font-semibold">Don't have an account?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
                 <Text
                   className="font-semibold"
                   style={{ color: themeColors.bgColor(1) }}
                 >
                   {" "}
-                  Login
+                  Register
                 </Text>
               </TouchableOpacity>
             </View>
@@ -152,8 +122,4 @@ const Profile = () => {
       </ScrollView>
     </SafeAreaView>
   );
-};
-
-export default Profile;
-
-const styles = StyleSheet.create({});
+}
