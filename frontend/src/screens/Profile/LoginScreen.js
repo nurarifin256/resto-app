@@ -44,8 +44,7 @@ export default function LoginScreen() {
     onSuccess: (data) => {
       if (data.message == "Succesfully logged in") {
         const jsonValue = JSON.stringify(data.data);
-        const storageUser = AsyncStorage.setItem("storage_user", jsonValue);
-        console.log("login", storageUser);
+        AsyncStorage.setItem("storage_user", jsonValue);
       }
     },
   });
