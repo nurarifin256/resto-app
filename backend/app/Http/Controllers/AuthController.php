@@ -44,9 +44,14 @@ class AuthController extends Controller
 
         $token = $user->createToken("sanctum_token")->plainTextToken;
 
+        $data = [
+            'user' => $user,
+            'token' => $token
+        ];
+
         return response()->json([
             'message' => 'Succesfully logged in',
-            'token' => $token,
+            'data'   => $data
         ], Response::HTTP_OK);
     }
 

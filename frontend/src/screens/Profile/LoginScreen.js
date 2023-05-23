@@ -15,8 +15,12 @@ import { StatusBar } from "expo-status-bar";
 import Domain from "../../../Domain";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { themeColors } from "../../theme";
 import { useNavigation } from "@react-navigation/native";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "../../hooks/authHook";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
   const bgRegister = `${Domain.ipAddress}/api/images/auth/bgRegister.jpg`;
@@ -35,6 +39,24 @@ export default function LoginScreen() {
   const handleChange = (name, value) => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
+
+  const { mutate: login } = useMutation((formData) => loginUser(formData), {
+    onSuccess: (data) => {
+      if (data.message == "Succesfully logged in") {
+        const jsonValue = JSON.stringify(data.data);
+        const storageUser = AsyncStorage.setItem("storage_user", jsonValue);
+        console.log("login", storageUser);
+      }
+    },
+  });
+
+  // const query = useQuery({ queryKey: ["csrf"], queryFn: getCsrf });
+  // console.log(query);
+
+  const handleLogin = () => {
+    login(formData);
+  };
+
   return (
     <SafeAreaView>
       <StatusBar style="light" />
@@ -42,11 +64,22 @@ export default function LoginScreen() {
       <ScrollView>
         <View className="relative">
           <Image className="w-full h-72" source={{ uri: bgRegister }} />
+
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="absolute top-14 bg-gray-50 p-2 rounded-full ml-3"
+          >
+            <Feather
+              name="arrow-left-circle"
+              size={25}
+              color={themeColors.bgColor(1)}
+            />
+          </TouchableOpacity>
         </View>
 
         <View
           style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
-          className="bg-white -mt-12 pt-6 pb-36"
+          className="bg-white -mt-12 pt-6 pb-64"
         >
           <View className="px-5 mb-3">
             <Text className="text-3xl font-bold mx-auto">Login</Text>
@@ -95,7 +128,7 @@ export default function LoginScreen() {
 
             <View className="mb-3">
               <TouchableOpacity
-                onPress={() => handleSave()}
+                onPress={() => handleLogin()}
                 className="rounded-xl"
                 style={{ backgroundColor: themeColors.bgColor(1) }}
               >

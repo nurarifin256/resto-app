@@ -17,6 +17,7 @@ import { themeColors } from "../../theme";
 import Domain from "../../../Domain";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { postUser } from "../../hooks/authHook";
 import { useNavigation } from "@react-navigation/native";
@@ -58,6 +59,17 @@ const Profile = () => {
       <ScrollView>
         <View className="relative">
           <Image className="w-full h-72" source={{ uri: bgRegister }} />
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Home")}
+            className="absolute top-14 bg-gray-50 p-2 rounded-full ml-3"
+          >
+            <Feather
+              name="arrow-left-circle"
+              size={25}
+              color={themeColors.bgColor(1)}
+            />
+          </TouchableOpacity>
         </View>
 
         <View
