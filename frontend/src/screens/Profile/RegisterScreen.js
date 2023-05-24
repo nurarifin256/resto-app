@@ -10,7 +10,6 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  ToastAndroid,
 } from "react-native";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -22,9 +21,11 @@ import { Feather } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { postUser } from "../../hooks/authHook";
 import { useNavigation } from "@react-navigation/native";
+import { useToast } from "react-native-toast-notifications";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
+  const toast = useToast();
   const bgRegister = `${Domain.ipAddress}/api/images/auth/bgRegister.jpg`;
 
   const [visibilty, setVisibilty] = useState(true);
@@ -62,15 +63,21 @@ export default function RegisterScreen() {
         });
       } else {
         setLoading(false);
-        console.log("sukses");
+        navigation.navigate("Login");
+        toast.show("Register user success", {
+          type: "success",
+          placement: "top",
+          duration: 4000,
+          offsetTop: 50,
+          animationType: "zoom-in",
+        });
       }
     },
   });
 
   const handleSave = () => {
-    // setLoading(true);
-    // addUser(formData);
-    ToastAndroid.show("Register user success", ToastAndroid.SHORT);
+    setLoading(true);
+    addUser(formData);
   };
   return loading ? (
     <View className="flex-1 justify-center items-center">
