@@ -8,7 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { Favourite, Home, Login, Profile, Search } from "../screens";
+import { Favourite, Home, Login, Profile, Register, Search } from "../screens";
 import { themeColors } from "../theme";
 
 const StackNavigator = () => {
@@ -108,6 +108,7 @@ const StackNavigator = () => {
       >
         <Stack.Screen name="Main" component={BottomTabs} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>
     </NavigationContainer>
   );

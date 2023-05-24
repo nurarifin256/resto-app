@@ -36,6 +36,7 @@ export default function Search() {
 
   const { mutate: logout } = useMutation((token) => logoutUser(token), {
     onSuccess: (data) => {
+      console.log(data);
       if (data.message == "Succesfully logout") {
         AsyncStorage.removeItem("storage_user");
         setToken(null);

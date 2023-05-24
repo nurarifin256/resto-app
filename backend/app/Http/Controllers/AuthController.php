@@ -12,6 +12,12 @@ class AuthController extends Controller
     public function postUser(Request $request)
     {
         if ($request->isMethod('post')) {
+            $request->validate([
+                'username' => 'required|string|unique:users,name',
+                'email'    => 'required|string|unique:users,email|email:rfc,dns',
+                'password' => 'required|string',
+            ]);
+
             $data = $request->input();
 
             $user           = new User();
