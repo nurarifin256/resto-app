@@ -9,6 +9,7 @@ import {
   TextInput,
   Pressable,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -21,16 +22,24 @@ import { useNavigation } from "@react-navigation/native";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../../hooks/authHook";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useToast } from "react-native-toast-notifications";
 
 export default function LoginScreen() {
   const bgRegister = `${Domain.ipAddress}/api/images/auth/bgRegister.jpg`;
   const navigation = useNavigation();
+  const toast = useToast();
 
   const [visibilty, setVisibilty] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+  });
+
+  const [errors, setErrors] = useState({
+    email: null,
+    password: null,
   });
 
   const changeType = () => {
@@ -42,9 +51,32 @@ export default function LoginScreen() {
 
   const { mutate: login } = useMutation((formData) => loginUser(formData), {
     onSuccess: (data) => {
-      if (data.message == "Succesfully logged in") {
+      if (data.message == "Bad credintial") {
+        setLoading(false);
+        setErrors({
+          ...errors,
+          email: "Wrong email",
+          password: "Wrong password",
+        });
+      } else if (data.errors) {
+        setLoading(false);
+        setErrors({
+          ...errors,
+          email: data.errors.email,
+          password: data.errors.password,
+        });
+      } else {
         const jsonValue = JSON.stringify(data.data);
         AsyncStorage.setItem("storage_user", jsonValue);
+        setLoading(false);
+        navigation.navigate("Home");
+        toast.show("Login user success", {
+          type: "success",
+          placement: "top",
+          duration: 4000,
+          offsetTop: 50,
+          animationType: "zoom-in",
+        });
       }
     },
   });
@@ -53,10 +85,20 @@ export default function LoginScreen() {
   // console.log(query);
 
   const handleLogin = () => {
+    setLoading(true);
     login(formData);
   };
 
-  return (
+  return loading ? (
+    <View className="flex-1 justify-center items-center">
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={themeColors.bgColor(1)}
+        animated={true}
+      />
+      <ActivityIndicator size="large" color={themeColors.bgColor(1)} />
+    </View>
+  ) : (
     <SafeAreaView>
       <StatusBar style="light" />
 
@@ -87,7 +129,11 @@ export default function LoginScreen() {
           <View className="ml-32 mx-5">
             <View className="mb-3">
               <Text className="text-lg">Email</Text>
-              <View className="flex-row flex-1 rounded-xl p-2 bg-gray-100">
+              <View
+                className={`flex-row flex-1 rounded-xl p-2 bg-gray-100 ${
+                  errors.email ? "border border-red-500" : "null"
+                }`}
+              >
                 <AntDesign name="mail" size={24} color="gray" />
                 <TextInput
                   className="ml-3 w-full"
@@ -97,11 +143,20 @@ export default function LoginScreen() {
                   onChangeText={(value) => handleChange("email", value)}
                 />
               </View>
+              {errors.email && (
+                <Text className="text-red-500 text-sm mt-2">
+                  {errors.email}
+                </Text>
+              )}
             </View>
 
             <View className="mb-3">
               <Text className="text-lg">Password</Text>
-              <View className="flex-row flex-1 justify-between rounded-xl p-2 bg-gray-100">
+              <View
+                className={`flex-row flex-1 rounded-xl p-2 bg-gray-100 ${
+                  errors.password ? "border border-red-500" : "null"
+                }`}
+              >
                 <View className="flex-row">
                   <AntDesign name="lock" size={24} color="gray" />
                   <TextInput
@@ -123,6 +178,11 @@ export default function LoginScreen() {
                   </Pressable>
                 </View>
               </View>
+              {errors.password && (
+                <Text className="text-red-500 text-sm mt-2">
+                  {errors.password}
+                </Text>
+              )}
             </View>
 
             <View className="mb-3">

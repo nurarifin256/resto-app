@@ -18,9 +18,11 @@ import {
   ModalTitle,
   ScaleAnimation,
 } from "react-native-modals";
+import { useToast } from "react-native-toast-notifications";
 
 export default function Search() {
   const navigation = useNavigation();
+  const toast = useToast();
   const [token, setToken] = useState(null);
   const [visible, setVisible] = useState(false);
 
@@ -39,6 +41,13 @@ export default function Search() {
       console.log(data);
       if (data.message == "Succesfully logout") {
         AsyncStorage.removeItem("storage_user");
+        toast.show("Logout user success", {
+          type: "success",
+          placement: "top",
+          duration: 4000,
+          offsetTop: 50,
+          animationType: "zoom-in",
+        });
         setToken(null);
         setVisible(false);
       }
