@@ -1,6 +1,6 @@
 /** @format */
 
-import { SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import Search from "../../components/Search";

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('post-user', 'App\Http\Controllers\AuthController@postUser');
 Route::post('login-user', 'App\Http\Controllers\AuthController@loginUser');
 Route::middleware('auth:sanctum')->post('logout-user', 'App\Http\Controllers\AuthController@logoutUser');
+
+Route::middleware('auth:sanctum')->resource('category', CategoryController::class);
 
 Route::get('images/auth/{images}', function ($image) {
     $path = storage_path('app/public/images/auth/' . $image);
