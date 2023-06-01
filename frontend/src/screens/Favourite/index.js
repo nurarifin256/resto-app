@@ -10,31 +10,49 @@ import {
   Image,
   Pressable,
   TextInput,
+  Button,
 } from "react-native";
 import React, { useState } from "react";
 import { themeColors } from "../../theme";
-import * as ImagePicker from "expo-image-picker";
 import { Feather } from "@expo/vector-icons";
+import { postCategory } from "../../hooks/categoryHook";
+import * as ImagePicker from "expo-image-picker";
 
 export default function Favourite() {
-  // const imageInfo = ImagePicker.imageInfo;
-  // const [selectedImage, setSelectedImage] = useState(imageInfo);
-  // const openImagePickerAsync = async () => {
-  //   let permissionResult =
-  //     await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //   if (permissionResult.granted === false) {
-  //     alert("Permission to access camera roll is required!");
-  //     return;
-  //   }
-  //   let pickerResult = await ImagePicker.launchImageLibraryAsync({
-  //     quality: 1,
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //   });
-  //   if (pickerResult.canceled === true) return;
-  //   setSelectedImage(pickerResult);
-  // };
-
   const [name, setName] = useState("");
+  const [imageSource, setImageSource] = useState(null);
+
+  const selectImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync();
+
+    if (!result.canceled) {
+      setImageSource(result.assets[0].uri);
+    }
+  };
+
+  const handleSave = async () => {
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("image", {
+      uri: imageSource,
+      type: "image/jpeg",
+      name: "image.jpg",
+    });
+
+    try {
+      const response = await postCategory(formData);
+
+      console.log(response);
+      // if (response.ok) {
+      //   console.log("Data saved successfully");
+      // } else {
+      //   console.log("Failed to save data");
+      // }
+    } catch (error) {
+      console.log("Error bos: ", error);
+    }
+  };
 
   return (
     <SafeAreaView>
@@ -60,43 +78,56 @@ export default function Favourite() {
                 placeholder="Enter name category"
                 autoComplete="off"
                 value={name}
+                onChangeText={(value) => setName(value)}
               />
             </View>
-            {/* {errors.username && (
-                <Text className="text-red-500 text-sm mt-2">
-                  {errors.username}
-                </Text>
-              )} */}
           </View>
-          {/* {selectedImage ? (
-            <View className="my-3">
-              <Image
-                className="w-32 h-32"
-                source={{ uri: selectedImage.uri }}
-              />
-            </View>
-          ) : (
+
+          <View className="mb-3">
+            {imageSource ? (
+              <>
+                <Image
+                  source={{ uri: imageSource }}
+                  style={{ width: 100, height: 100 }}
+                  className="mb-3 rounded-xl"
+                />
+
+                <Pressable
+                  onPress={() => setImageSource(null)}
+                  className="rounded-xl bg-blue-500"
+                >
+                  <Text className="text-white text-lg text-center p-3">
+                    Remove Image
+                  </Text>
+                </Pressable>
+              </>
+            ) : (
+              <Button title="Choose Photo" onPress={selectImage} />
+            )}
+          </View>
+
+          <View>
             <Pressable
-              className="rounded-xl"
-              onPress={openImagePickerAsync}
-              style={{ backgroundColor: themeColors.bgColor(1) }}
-            >
-              <Text className="text-center p-3 text-white text-lg">Upload</Text>
-            </Pressable>
-          )}
-          <View className="my-3">
-            <TouchableOpacity
               onPress={() => handleSave()}
               className="rounded-xl"
               style={{ backgroundColor: themeColors.bgColor(1) }}
             >
-              <Text className="text-center p-3 text-white text-lg">
-                REGISTER
-              </Text>
-            </TouchableOpacity>
-          </View> */}
+              <Text className="text-center p-3 text-white text-lg">SAVE</Text>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+{
+  /* <Pressable
+                onPress={selectImage}
+                className="rounded-xl bg-blue-500"
+              >
+                <Text className="text-white text-lg text-center p-3">
+                  Choose Image
+                </Text>
+              </Pressable> */
 }

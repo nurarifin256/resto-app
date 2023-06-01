@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
@@ -27,7 +29,25 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        if ($request->hasFile('image')) {
+            $data = $request->input();
+
+            $image = $request->file('image')->store('images/category', 'public');
+
+            $category             = new Category();
+            $category->name       = $data['name'];
+            $category->image      = $image;
+            $category->created_by = $data['created_by'];
+            $category->save();
+
+            return response()->json([
+                'message' => 'Successfull add category'
+            ], Response::HTTP_OK);
+        }
+        return response()->json([
+            'message' => 'Failed'
+        ], Response::HTTP_BAD_REQUEST);
     }
 
     /**
