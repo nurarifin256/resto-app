@@ -10,6 +10,7 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
 import { themeColors } from "../../theme";
@@ -17,9 +18,11 @@ import { Feather } from "@expo/vector-icons";
 import { postCategory } from "../../hooks/categoryHook";
 import { useToast } from "react-native-toast-notifications";
 import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
 
-export default function Favourite() {
+export default function AddCategory() {
   const toast = useToast();
+  const navigation = useNavigation();
   const [name, setName] = useState("");
   const [imageSource, setImageSource] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +51,7 @@ export default function Favourite() {
       console.log(response);
       if (response.message == "Successfull add category") {
         setLoading(false);
+        navigation.navigate("Category");
         toast.show("Add category success", {
           type: "success",
           placement: "top",
@@ -80,11 +84,13 @@ export default function Favourite() {
       <ScrollView>
         <View className="mx-5 mt-10">
           <View className="flex-row mb-3">
-            <Feather
-              name="arrow-left-circle"
-              size={38}
-              color={themeColors.bgColor(1)}
-            />
+            <TouchableOpacity onPress={() => navigation.navigate("Category")}>
+              <Feather
+                name="arrow-left-circle"
+                size={38}
+                color={themeColors.bgColor(1)}
+              />
+            </TouchableOpacity>
             <View className="content-center w-full">
               <Text className="text-3xl ml-20 pt-1 font-bold">Category</Text>
             </View>
