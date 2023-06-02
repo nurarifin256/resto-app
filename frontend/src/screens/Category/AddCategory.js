@@ -20,7 +20,7 @@ import { useToast } from "react-native-toast-notifications";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 
-export default function AddCategory() {
+export default function AddCategory({ route }) {
   const toast = useToast();
   const navigation = useNavigation();
   const [name, setName] = useState("");
@@ -48,7 +48,6 @@ export default function AddCategory() {
 
     try {
       const response = await postCategory(formData);
-      console.log(response);
       if (response.message == "Successfull add category") {
         setLoading(false);
         navigation.navigate("Category");
@@ -59,6 +58,7 @@ export default function AddCategory() {
           offsetTop: 50,
           animationType: "zoom-in",
         });
+        route.params.refetch();
       } else {
         setLoading(false);
         console.log("Failed to save data");
@@ -98,7 +98,7 @@ export default function AddCategory() {
 
           <View className="mb-3">
             <Text className="text-lg text-gray-700">Name</Text>
-            <View className="bg-gray-200 rounded-xl p-2">
+            <View className="bg-white rounded-xl p-2">
               <TextInput
                 className="ml-3 w-full"
                 placeholder="Enter name category"

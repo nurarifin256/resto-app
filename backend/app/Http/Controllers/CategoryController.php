@@ -13,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::select('id', 'name', 'image')->get();
+        $categories = Category::select('id', 'name', 'image')->orderBy('name', 'asc')->get();
 
         return response()->json([
             'categories' => $categories

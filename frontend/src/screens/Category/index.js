@@ -29,7 +29,7 @@ export default function Category() {
   return (
     <View className="flex-1">
       <ScrollView>
-        <View className="mx-5 mt-10">
+        <View className="mx-5 mt-10 mb-20">
           <View>
             <Text className="text-center p-3 text-3xl font-bold">
               List Category
@@ -39,7 +39,7 @@ export default function Category() {
             return (
               <View
                 key={index}
-                className="bg-gray-200 rounded-xl flex-row h-20 my-2"
+                className="bg-white rounded-xl flex-row h-20 my-2"
               >
                 <Image
                   style={{
@@ -60,7 +60,11 @@ export default function Category() {
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Add/Category")}
+        onPress={() =>
+          navigation.navigate("Add/Category", {
+            refetch: refetch,
+          })
+        }
         className="rounded-full absolute bottom-0 right-0 h-16 w-16"
       >
         <AntDesign name="pluscircle" size={45} color={themeColors.bgColor(1)} />

@@ -43,7 +43,7 @@ const StackNavigator = () => {
           tabBarHideOnKeyboard: true,
         }}
       >
-        {username == "admin" ? (
+        {username === "admin" ? (
           <>
             <Tab.Screen
               name="Home"

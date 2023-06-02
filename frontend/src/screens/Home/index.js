@@ -1,9 +1,10 @@
 /** @format */
 
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import Search from "../../components/Search";
+import Categories from "../../components/Categories";
 
 const Home = () => {
   return (
@@ -13,6 +14,10 @@ const Home = () => {
       {/* search */}
       <Search />
       {/* end search */}
+
+      {/* categories */}
+      <Categories />
+      {/* end categories */}
     </SafeAreaView>
   );
 };
