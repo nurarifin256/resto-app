@@ -11,6 +11,7 @@ import {
   TextInput,
   ActivityIndicator,
   TouchableOpacity,
+  LogBox,
 } from "react-native";
 import React, { useState } from "react";
 import { themeColors } from "../../theme";
@@ -20,10 +21,15 @@ import { useToast } from "react-native-toast-notifications";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
+
 export default function AddCategory({ route }) {
   const toast = useToast();
   const navigation = useNavigation();
   const [name, setName] = useState("");
+  const [errName, setErrName] = useState("");
   const [imageSource, setImageSource] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -36,36 +42,46 @@ export default function AddCategory({ route }) {
   };
 
   const handleSave = async () => {
-    setLoading(true);
-    const formData = new FormData();
+    if (imageSource == null) {
+      toast.show("Image is required", {
+        type: "warning",
+        placement: "top",
+        duration: 4000,
+        offsetTop: 50,
+        animationType: "zoom-in",
+      });
+    } else {
+      setLoading(true);
+      const formData = new FormData();
 
-    formData.append("name", name);
-    formData.append("image", {
-      uri: imageSource,
-      type: "image/jpeg",
-      name: "image.jpg",
-    });
+      formData.append("name", name);
+      formData.append("image", {
+        uri: imageSource,
+        type: "image/jpeg",
+        name: "image.jpg",
+      });
 
-    try {
-      const response = await postCategory(formData);
-      if (response.message == "Successfull add category") {
+      try {
+        const response = await postCategory(formData);
+        if (response.message == "Successfull add category") {
+          setLoading(false);
+          navigation.navigate("Category");
+          toast.show("Add category success", {
+            type: "success",
+            placement: "top",
+            duration: 4000,
+            offsetTop: 50,
+            animationType: "zoom-in",
+          });
+          route.params.refetch();
+        } else {
+          setLoading(false);
+          setErrName(response.name);
+        }
+      } catch (error) {
         setLoading(false);
-        navigation.navigate("Category");
-        toast.show("Add category success", {
-          type: "success",
-          placement: "top",
-          duration: 4000,
-          offsetTop: 50,
-          animationType: "zoom-in",
-        });
-        route.params.refetch();
-      } else {
-        setLoading(false);
-        console.log("Failed to save data");
+        console.log("Error bos: ", error);
       }
-    } catch (error) {
-      setLoading(false);
-      console.log("Error bos: ", error);
     }
   };
 
@@ -98,7 +114,11 @@ export default function AddCategory({ route }) {
 
           <View className="mb-3">
             <Text className="text-lg text-gray-700">Name</Text>
-            <View className="bg-white rounded-xl p-2">
+            <View
+              className={`bg-white rounded-xl p-2 ${
+                errName ? "border border-red-500" : "null"
+              }`}
+            >
               <TextInput
                 className="ml-3 w-full"
                 placeholder="Enter name category"
@@ -107,6 +127,9 @@ export default function AddCategory({ route }) {
                 onChangeText={(value) => setName(value)}
               />
             </View>
+            {errName && (
+              <Text className="text-red-500 text-sm mt-1">{errName}</Text>
+            )}
           </View>
 
           <View className="mb-3">

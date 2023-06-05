@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -34,8 +35,21 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
 
-        if ($request->hasFile('image')) {
+        if ($request->isMethod('post')) {
             $data = $request->input();
+
+            $rules = [
+                "name" => "required",
+            ];
+
+            $customMessages = [
+                "name.required" => "Name is required",
+            ];
+
+            $validator = Validator::make($data, $rules, $customMessages);
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
 
             $image = $request->file('image')->store('images/category', 'public');
 

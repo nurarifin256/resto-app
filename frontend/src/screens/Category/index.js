@@ -42,16 +42,12 @@ export default function Category() {
                 className="bg-white rounded-xl flex-row h-20 my-2"
               >
                 <Image
-                  style={{
-                    borderWidth: 2,
-                    borderColor: themeColors.bgColor(1),
-                  }}
-                  className="rounded-full w-16 h-16 my-auto mx-3 bg-white"
+                  className="rounded-full w-16 h-16 my-auto mx-3 bg-gray-200"
                   source={{
                     uri: `${Domain.ipAddress}/api/${category.image}`,
                   }}
                 />
-                <Text className="text-lg text-gray-700 text-center my-auto">
+                <Text className="text-lg text-gray-500 text-center my-auto">
                   {category.name}
                 </Text>
               </View>
