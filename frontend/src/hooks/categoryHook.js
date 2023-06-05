@@ -20,6 +20,22 @@ export const postCategory = async (formData) => {
   return response;
 };
 
+export const deleteCategory = async (id) => {
+  const deleted_by = token._j.user.name;
+  const name = { deleted_by };
+  let response = await fetch(`${Domain.ipAddress}/api/category/${id}`, {
+    method: "DELETE",
+    body: JSON.stringify(name),
+    headers: {
+      Authorization: `Bearer ${token._j.token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  response = await response.json();
+  return response;
+};
+
 export const getCategories = async () => {
   let response = await fetch(`${Domain.ipAddress}/api/category`, {
     method: "GET",
